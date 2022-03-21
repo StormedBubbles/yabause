@@ -114,22 +114,23 @@ void retro_set_environment(retro_environment_t cb)
    static const struct retro_controller_description peripherals[] = {
        { "Saturn Pad", RETRO_DEVICE_JOYPAD },
        { "Saturn 3D Pad", RETRO_DEVICE_ANALOG },
+       { "Saturn Lightgun", RETRO_DEVICE_LIGHTGUN },
        { "None", RETRO_DEVICE_NONE },
    };
 
    static const struct retro_controller_info ports[] = {
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
-      { peripherals, 3 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
+      { peripherals, 4 },
       { NULL, 0 },
    };
 
@@ -146,6 +147,8 @@ void retro_set_input_state(retro_input_state_t cb) { input_state_cb = cb; }
 
 // PERLIBRETRO
 #define PERCORE_LIBRETRO 2
+
+static PerGun_struct* gunbits = NULL;
 
 int PERLIBRETROInit(void)
 {
@@ -181,6 +184,11 @@ int PERLIBRETROInit(void)
                PerSetKey((i << 8) + j, j, controller);
             for(j = PERANALOG_AXIS1; j <= PERANALOG_AXIS7; j++)
                PerSetKey((i << 8) + j, j, controller);
+            break;
+         case RETRO_DEVICE_LIGHTGUN:
+            gunbits = PerGunAdd(portdata);
+            for(j = PERGUN_TRIGGER; j <= PERGUN_START; j++)
+               PerSetKey((i << 8) + j, j, gunbits);
             break;
          case RETRO_DEVICE_JOYPAD:
          default:
@@ -310,6 +318,22 @@ static int PERLIBRETROHandleEvents(void)
                   PerKeyDown((i << 8) + PERPAD_RIGHT_TRIGGER);
                else
                   PerKeyUp((i << 8) + PERPAD_RIGHT_TRIGGER);
+               break;
+           
+             case RETRO_DEVICE_LIGHTGUN:
+
+               (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) ? PerKeyDown((i << 8) + PERGUN_TRIGGER) : PerKeyUp((i << 8) + PERGUN_TRIGGER));
+               (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
+               // (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_MOUSE_RIGHT) ? PerKeyDown((i << 8) + PERMOUSE_RIGHT) : PerKeyUp((i << 8) + PERMOUSE_RIGHT));
+               // there are some issues with libretro's mouse button 4 & 5 ?
+               // let's also use joypad's start for safety
+               // (input_state_cb_wrapper(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START) || input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_BUTTON_4) || input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_BUTTON_5) ? PerKeyDown((i << 8) + PERMOUSE_START) : PerKeyUp((i << 8) + PERMOUSE_START));
+
+               // is saturn supposed to be able to use several mouse ?
+               // because i don't think this code is right in that case
+               s32 dispx = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+               s32 dispy = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+               PerGunMove(gunbits, dispx, -dispy);
                break;
 
             default:
@@ -1070,7 +1094,9 @@ bool retro_load_game(const struct retro_game_info *info)
       { 0, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y, "Analog Y" },
       { 0, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X, "Analog X (Right)" },
       { 0, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y, "Analog Y (Right)" }, 
-
+      { 0, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER, "Gun Trigger" },
+      { 0, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START, "Gun Start" },
+    
       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,  "D-Pad Down" },
@@ -1088,7 +1114,9 @@ bool retro_load_game(const struct retro_game_info *info)
       { 1, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y, "Analog Y" },
       { 1, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X, "Analog X (Right)" },
       { 1, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y, "Analog Y (Right)" }, 
-
+      { 1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER, "Gun Trigger" },
+      { 1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START, "Gun Start" },
+    
       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
       { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,  "D-Pad Down" },
