@@ -331,8 +331,8 @@ static int PERLIBRETROHandleEvents(void)
 
                // is saturn supposed to be able to use several mouse ?
                // because i don't think this code is right in that case
-               s32 dispx = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
-               s32 dispy = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+               s32 dispx = input_state_cb(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+               s32 dispy = input_state_cb(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
                PerGunMove(gunbits, dispx, -dispy);
                break;
 
