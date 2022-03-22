@@ -187,7 +187,7 @@ int PERLIBRETROInit(void)
             break;
          case RETRO_DEVICE_LIGHTGUN:
             gunbits = PerGunAdd(portdata);
-            for(j = PERGUN_TRIGGER; j <= PERGUN_START; j++)
+            for(j = PERGUN_TRIGGER; j <= PERGUN_AXIS; j++)
                PerSetKey((i << 8) + j, j, gunbits);
             break;
          case RETRO_DEVICE_JOYPAD:
