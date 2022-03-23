@@ -191,6 +191,9 @@ int PERLIBRETROInit(void)
             mousebits = PerMouseAdd(portdata);
             for(j = PERMOUSE_LEFT; j <= PERMOUSE_START; j++)
                PerSetKey((i << 8) + j, j, mousebits);
+            controller = (void*)PerPadAdd(portdata);
+            for(j = PERPAD_UP; j <= PERPAD_Z; j++)
+               PerSetKey((i << 8) + j, j, controller);
             break;
          case RETRO_DEVICE_LIGHTGUN:
             gunbits = PerGunAdd(portdata);
