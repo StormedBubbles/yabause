@@ -191,9 +191,6 @@ int PERLIBRETROInit(void)
             mousebits = PerMouseAdd(portdata);
             for(j = PERMOUSE_LEFT; j <= PERMOUSE_START; j++)
                PerSetKey((i << 8) + j, j, mousebits);
-            controller = (void*)PerPadAdd(portdata);
-            for(j = PERPAD_UP; j <= PERPAD_Z; j++)
-               PerSetKey((i << 8) + j, j, controller);
             break;
          case RETRO_DEVICE_LIGHTGUN:
             gunbits = PerGunAdd(portdata);
@@ -337,7 +334,7 @@ static int PERLIBRETROHandleEvents(void)
                (input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_RIGHT) ? PerKeyDown((i << 8) + PERMOUSE_RIGHT) : PerKeyUp((i << 8) + PERMOUSE_RIGHT));
                // there are some issues with libretro's mouse button 4 & 5 ?
                // let's also use joypad's start for safety
-               (input_state_cb_wrapper(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START) || input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_BUTTON_4) || input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_BUTTON_5) ? PerKeyDown((i << 8) + PERPAD_START) : PerKeyUp((i << 8) + PERPAD_START));
+               (input_state_cb_wrapper(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START) || input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_BUTTON_4) || input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_BUTTON_5) ? PerKeyDown((i << 8) + PERMOUSE_START) : PerKeyUp((i << 8) + PERMOUSE_START));
                // (input_state_cb_wrapper(i, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START) ? PerKeyDown((i << 8) + PERMOUSE_START) : PerKeyUp((i << 8) + PERMOUSE_START));
                // is saturn supposed to be able to use several mouse ?
                // because i don't think this code is right in that case
