@@ -94,7 +94,7 @@ extern struct retro_hw_render_callback hw_render;
 #endif
 
     const getImageRect() {
-      return myOSystem->frameBuffer().imageRect();
+      return frameBuffer().imageRect();
     }
 
 void retro_set_environment(retro_environment_t cb)
@@ -354,7 +354,7 @@ static int PERLIBRETROHandleEvents(void)
 
                //s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
                //s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);  
-               rect =  getImageRect();
+               const rect =  getImageRect();
                s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X + 0x8000) * rect.w() / 0xffff;
                s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y + 0x8000) * rect.h() / 0xffff;
                PerGunMove(gunbits, gunx, guny);
