@@ -93,6 +93,10 @@ static struct retro_hw_render_callback hw_render;
 extern struct retro_hw_render_callback hw_render;
 #endif
 
+    const Common::Rect& getImageRect() const {
+      return myOSystem->frameBuffer().imageRect();
+    }
+
 void retro_set_environment(retro_environment_t cb)
 {
    static const struct retro_variable vars[] = {
@@ -349,9 +353,10 @@ static int PERLIBRETROHandleEvents(void)
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
 
                //s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-               //s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);         
-               s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X + 0x8000) * current_width / 0xffff;
-               s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y + 0x8000) * current_height / 0xffff;
+               //s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);  
+               const Common::Rect& rect =  getImageRect();
+               s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X + 0x8000) * rect.w() / 0xffff;
+               s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y + 0x8000) * rect.h() / 0xffff;
                PerGunMove(gunbits, gunx, guny);
                break;
 
