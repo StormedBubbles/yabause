@@ -53,8 +53,7 @@ NULL
 };
 
 PortData_struct PORTDATA1;
-PortData_struct PORTDATA2;
-static u8 IOPORT[ioPortMAX];						
+PortData_struct PORTDATA2;					
 
 PerInterface_struct * PERCore = NULL;
 extern PerInterface_struct * PERCoreList[];
@@ -71,17 +70,7 @@ typedef struct {
 	u32 key;
 	PerBaseConfig_struct * base;
 	void * controller;
-} PerConfig_struct;
-
-typedef struct {
-        u32 key;
-        u8* port;
-        u8 mask;
-} PerIO_struct;
-
-static PerIO_struct* IOkeys[256];
-
-static PerIO_struct IOalloc[ioPortMAX][8];						 
+} PerConfig_struct;						 
 					
 #define PERCB(func) ((void (*) (void *)) func)
 #define PERVALCB(func) ((void (*) (void *, u32)) func)
@@ -156,80 +145,6 @@ static void IOPortReleased(int key) {
   }
 }
 
-
-u8 FASTCALL IOPortReadByte(SH2_struct *context, UNUSED u8* memory,  u32 addr)
-{
-/*
-    0x0001 PORT-A (P1)
-    0x0003 PORT-B (P2)
-    0x0005 PORT-C (SYSTEM)
-    0x0007 PORT-D (OUTPUT)
-    0x0009 PORT-E (P3)
-    0x000b PORT-F (P4 / Extra 6B layout)
-    0x000d PORT-G
-    0x000f unused
-    0x0011 PORT_DIRECTION (each bit configure above IO ports, 1 - input, 0 - output)
-    ---x ---- joystick/mahjong panel select
-    ---- x--- used in danchih (different mux scheme for the hanafuda panel?)
-    0x0013 RS422 TXD1
-    0x0015 RS422 TXD2 SERIAL COM Tx
-    0x0017 RS422 RXD1
-    0x0019 RS422 RXD2 SERIAL COM Rx
-    0x001b RS422 FLAG
-    0x001d MODE (bit 7 - set PORT-G to counter-mode, bits 0-5 - RS422 satellite mode and node#)  <Technical Bowling>
-    0x001f PORT-AD (8ch, write: bits 0-2 - set channel, read: channel data with autoinc channel number)
-*/
-   addr = addr&0x1F;
-   u8 val = 0x0;
-   switch(addr) {
-     case 0x01: val = IOPORT[PORT_A]; break; // P1
-     case 0x03: val = IOPORT[PORT_B]; break; // P2
-     case 0x05: val = IOPORT[PORT_C]; break; // SYSTEM //Return press status like declared in stv.cpp
-     case 0x07: val = m_system_output; break; // port D, read-backs value written
-     case 0x09: val = IOPORT[PORT_E]; break; // P3
-     case 0x0b: val = IOPORT[PORT_F]; break; // P4
-     case 0x0d: //PORT-G
-       if (m_ioga_mode & 0x80) // PORT-G in counter mode
-       {
-         val = IOPORT[PORT_G0+((m_ioga_portg >> 1) & 3)] >> (((m_ioga_portg & 1) ^ 1) * 8);
-         m_ioga_portg = (m_ioga_portg & 0xf8) | ((m_ioga_portg + 1) & 7); // counter# is auto-incremented then read
-       }
-       else
-         val = IOPORT[PORT_G];
-       break;
-     case 0x1b: val = 0x0; break; // Serial COM READ status
-     case 0x1d: val = m_ioga_mode; break;
-
-   }
-   return val;
-}
-
-u16 FASTCALL IOPortReadWord(SH2_struct *context, UNUSED u8* memory, u32 addr)
-{
-   return IOPortReadByte(context, memory, addr|1);
-}
-
-void FASTCALL IOPortWriteByte(SH2_struct *context, UNUSED u8* memory,UNUSED u32 addr, UNUSED u8 val)
-{
-   addr = addr&0x1F;
-  switch(addr)
-  {
-    case 0x07:
-      m_system_output = val;
-      break;
-    case 0x09: IOPORT[PORT_F] = val;
-               IOPORT[PORT_G] = val;
-               break; // P3
-    case 0x0b: IOPORT[PORT_E] = val; break; // P4
-    case 0x0d:
-      //port-g
-      m_ioga_portg = val;
-      break;
-    case 0x1d:
-      m_ioga_mode = val;
-      break;
-  }
-}
 //////////////////////////////////////////////////////////////////////////////
 
 int PerInit(int coreid) {
@@ -994,23 +909,23 @@ void PerAxisMove(u32 key, s32 dispx, s32 dispy)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void PerPortReset(void)
-{
-  int i;	
-        PORTDATA1.data[0] = 0xF0;
-        PORTDATA1.size = 1;
-        PORTDATA2.data[0] = 0xF0;
-        PORTDATA2.size = 1;
-
-        for (i=0; i<ioPortMAX; i++)
-          IOPORT[i] = 0xFF; //IOPORT are in pull up mode.
-        for (i=0; i<256; i++)
-          IOkeys[i] = NULL;	   
-	perkeyconfigsize = 0;
-        if (perkeyconfig)
-           free(perkeyconfig);
-	perkeyconfig = NULL;
-}
+//void PerPortReset(void)
+//{
+//  int i;	
+//        PORTDATA1.data[0] = 0xF0;
+//        PORTDATA1.size = 1;
+//        PORTDATA2.data[0] = 0xF0;
+//        PORTDATA2.size = 1;
+//
+//        for (i=0; i<ioPortMAX; i++)
+//          IOPORT[i] = 0xFF; //IOPORT are in pull up mode.
+//        for (i=0; i<256; i++)
+//          IOkeys[i] = NULL;	   
+//	perkeyconfigsize = 0;
+//        if (perkeyconfig)
+//           free(perkeyconfig);
+//	perkeyconfig = NULL;
+//}
 
 //////////////////////////////////////////////////////////////////////////////
 
