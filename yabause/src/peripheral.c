@@ -782,7 +782,7 @@ void * PerAddPeripheral(PortData_struct *port, int perid)
 
 int PerGetId(void * peripheral)
 {
-   u8 * id = peripheral;
+   u8 * id = (u8*)peripheral;
    return *id;
 }
 
@@ -914,6 +914,7 @@ void PerUpdateConfig(PerBaseConfig_struct * baseconfig, int nelems, void * contr
    {
       perkeyconfig[i].base = baseconfig + j;
       perkeyconfig[i].controller = controller;
+			perkeyconfig[i].key = -1;
       j++;
    }
 }
