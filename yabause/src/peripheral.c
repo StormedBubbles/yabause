@@ -717,8 +717,7 @@ void PerGunMove(PerGun_struct * gun, s32 dispx, s32 dispy)
       y = 0;
    else if (y >= 224) // fix me
       y = 223;
-
-			YuiMsg("PerGun Mv %d %d\n", x, y);							 
+						 
    *(gun->gunbits+1) = x >> 8;
    *(gun->gunbits+2) = x;
    *(gun->gunbits+3) = y >> 8;
