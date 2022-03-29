@@ -353,14 +353,14 @@ static int PERLIBRETROHandleEvents(void)
                s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X + 0x7fff) * game_width / 0xffff;
                s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y + 0x7fff) * game_height / 0xffff;
 
-               if (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
-               {
+               //if (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
+               //{
 	                //      //top left
-	              gunx = -65534;
-	              guny = -65534;
-               }
+	       //       gunx = -65534;
+	       //       guny = -65534;
+               //}
            
-               PerGunMove(gunbits, gunx, guny);
+               PerGunMove(gunbits, gunx, -guny);
                break;
 
             default:
