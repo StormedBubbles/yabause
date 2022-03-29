@@ -1172,12 +1172,6 @@ void Vdp2VBlankOUT(void) {
 
    ScuSendVBlankOUT();
 
-   if (Vdp2Regs->EXTEN & 0x200) // Should be revised for accuracy(should occur only occur on the line it happens at, etc.)
-   {
-      // Only Latch if EXLTEN is enabled
-      if (SmpcRegs->EXLE & 0x1)
-         Vdp2SendExternalLatch((PORTDATA1.data[3]<<8)|PORTDATA1.data[4], (PORTDATA1.data[5]<<8)|PORTDATA1.data[6]);
-   }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1185,7 +1179,7 @@ void Vdp2VBlankOUT(void) {
 void Vdp2SendExternalLatch(int hcnt, int vcnt)
 {
    Vdp2Regs->HCNT = hcnt << 1;
-   Vdp2Regs->VCNT = vcnt;
+   Vdp2Regs->VCNT = vcnt << 1;
    Vdp2Regs->TVSTAT |= 0x200;
 }
 
@@ -1213,6 +1207,13 @@ u16 FASTCALL Vdp2ReadWord(u32 addr) {
        // Vdp2Regs->HCNT = ?;
        Vdp2Regs->VCNT = yabsys.LineCount;
        Vdp2Regs->TVSTAT |= 0x200;
+         } else {
+           // if (Vdp2Regs->EXTEN & 0x200) // Should be revised for accuracy(should occur only occur on the line it happens at, etc.)
+           // {
+           //    // Only Latch if EXLTEN is enabled
+           //    if (SmpcRegs->EXLE & 0x1)
+           //       Vdp2SendExternalLatch((PORTDATA1.data[3]<<8)|PORTDATA1.data[4], (PORTDATA1.data[5]<<8)|PORTDATA1.data[6]);
+           // }
      }
 
      return Vdp2Regs->EXTEN;
@@ -1232,8 +1233,10 @@ u16 FASTCALL Vdp2ReadWord(u32 addr) {
    case 0x006:
      return Vdp2Regs->VRSIZE;
    case 0x008:
+      YuiMsg("Return HCNT %d\n", Vdp2Regs->HCNT);
      return Vdp2Regs->HCNT;
    case 0x00A:
+        YuiMsg("Return VCNT %d\n", Vdp2Regs->VCNT);
      return Vdp2Regs->VCNT;
    case 0x00C:
      return 0 ;
