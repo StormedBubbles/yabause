@@ -339,6 +339,7 @@ void YabauseThread::reloadControllers()
 
 						PerSetKey( key.toUInt(), gunKey.toUInt(), gunbits );
 					}
+					emit toggleEmulateMouse( true );
 					break;
 				}
 				case PERKEYBOARD:
