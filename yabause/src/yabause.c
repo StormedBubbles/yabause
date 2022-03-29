@@ -162,14 +162,27 @@ void YabauseChangeTiming(int freqtype) {
    const double freq_mult = (freqtype == CLKTYPE_26MHZ) ? 15.0/16.0 : 1.0;
    const double freq_shifted = (freq_base * freq_mult) * (1 << YABSYS_TIMING_BITS);
    const double usec_shifted = 1.0e6 * (1 << YABSYS_TIMING_BITS);
-   const double deciline_time = yabsys.IsPal ? 1.0 /  50        / 313 / 10
-                                             : 1.0 / (60/1.001) / 263 / 10;
+   const double line_time = yabsys.IsPal ? 1.0 /  50        / 313
+                                         : 1.0 / (60/1.001) / 263;
+   const double line_clk_cnt = line_time * (freq_base * freq_mult);
+   yabsys.lineClk = line_clk_cnt * HBLANK_IN_STEP / DECILINE_STEP;
+   yabsys.pixClk = yabsys.lineClk / _Ygl->rwidth;
+   const double deciline_time = line_time / DECILINE_STEP;
 
    yabsys.DecilineCount = 0;
    yabsys.LineCount = 0;
    yabsys.CurSH2FreqType = freqtype;
+
+   for (int i = 0; i < DECILINE_STEP; i++) {
+     yabsys.LineCycle[i] = (u32) (line_clk_cnt * (float)i/(float)(DECILINE_STEP - 1));
+   }
+   for (int i = DECILINE_STEP-1; i>0; i--) {
+     yabsys.LineCycle[i] -= yabsys.LineCycle[i-1];
+   }
+
    yabsys.DecilineStop = (u32) (freq_shifted * deciline_time + 0.5);
-   yabsys.SH2CycleFrac = 0;
+   MSH2->cycleFrac = 0;
+   SSH2->cycleFrac = 0;
    yabsys.DecilineUsec = (u32) (usec_shifted * deciline_time + 0.5);
    yabsys.UsecFrac = 0;
 }
