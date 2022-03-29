@@ -125,26 +125,6 @@ u8 m_system_output = 0;
 u8 m_ioga_mode = 0;
 u8 m_ioga_portg = 0;
 
-int IOPortAdd(int key, ioPort port, u8 index) {
-  if (index >= 8) return -1;
-  IOalloc[port][index].key = key;
-  IOalloc[port][index].port = &IOPORT[port];
-  IOalloc[port][index].mask = (0x1 << index);
-  IOkeys[key] = &(IOalloc[port][index]);
-  return 0;
-}
-
-static void IOPortPressed(int key) {
-  if (IOkeys[(key & 0xFF)] != NULL){
-    (*IOkeys[(key & 0xFF)]->port) &= ~IOkeys[(key & 0xFF)]->mask;
-  }
-}
-static void IOPortReleased(int key) {
-  if (IOkeys[(key & 0xFF)] != NULL){
-    (*IOkeys[(key & 0xFF)]->port) |= IOkeys[(key & 0xFF)]->mask;
-  }
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 int PerInit(int coreid) {
@@ -939,7 +919,7 @@ void PerUpdateConfig(PerBaseConfig_struct * baseconfig, int nelems, void * contr
 	 PerConfig_struct *new_data = (PerConfig_struct*)realloc(perkeyconfig, perkeyconfigsize * sizeof(PerConfig_struct));
  	if (new_data == NULL)
  	{
-		YuiMsg("Peripheral realloc Error\n");
+		//YuiMsg("Peripheral realloc Error\n");
  	} else {
      perkeyconfig = new_data;
  	}
