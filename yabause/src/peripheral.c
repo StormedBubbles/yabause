@@ -964,7 +964,7 @@ PerAnalog_struct * PerTwinSticksAdd(PortData_struct * port)
 
 PerGun_struct * PerGunAdd(PortData_struct * port)
 {
-   return PerAddPeripheral(port, PERGUN);
+   return (PerGun_struct *) PerAddPeripheral(port, PERGUN);
 }
 
 //////////////////////////////////////////////////////////////////////////////
