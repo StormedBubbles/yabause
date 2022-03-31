@@ -104,22 +104,23 @@ void retro_set_environment(retro_environment_t cb)
        { "Saturn 3D Pad", RETRO_DEVICE_3DPAD },
        { "Saturn Wheel", RETRO_DEVICE_WHEEL },
        { "Saturn Mouse", RETRO_DEVICE_MOUSE },
+       { "Saturn Lightgun", RETRO_DEVICE_LIGHTGUN },
        { "None", RETRO_DEVICE_NONE },
    };
 
    static const struct retro_controller_info ports[] = {
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
-      { peripherals, 5 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
+      { peripherals, 6 },
       { NULL, 0 },
    };
 
@@ -136,6 +137,7 @@ void retro_set_input_state(retro_input_state_t cb) { input_state_cb = cb; }
 #define PERCORE_LIBRETRO 2
 
 static PerMouse_struct* mousebits = NULL;
+static PerGun_struct* gunbits = NULL;
 
 int PERLIBRETROInit(void)
 {
@@ -179,6 +181,11 @@ int PERLIBRETROInit(void)
             mousebits = PerMouseAdd(portdata);
             for(j = PERMOUSE_LEFT; j <= PERMOUSE_START; j++)
                PerSetKey((i << 8) + j, j, mousebits);
+            break;
+         case RETRO_DEVICE_LIGHTGUN:
+            gunbits = PerGunAdd(portdata);
+            for(j = PERGUN_TRIGGER; j <= PERGUN_START; j++)
+               PerSetKey((i << 8) + j, j, gunbits);
             break;
          case RETRO_DEVICE_JOYPAD:
          default:
@@ -327,6 +334,18 @@ static int PERLIBRETROHandleEvents(void)
                s32 dispx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
                s32 dispy = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
                PerMouseMove(mousebits, dispx, -dispy);
+               break;
+			 
+             case RETRO_DEVICE_LIGHTGUN:
+
+               (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) ? PerKeyDown((i << 8) + PERGUN_TRIGGER) : PerKeyUp((i << 8) + PERGUN_TRIGGER));
+               (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
+
+               //s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+               //s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);  
+               s32 gunx = (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) + 0x7fff) * game_width / 0xffff;
+               s32 guny = (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) + 0x7fff) * game_height / 0xffff;
+               PerGunMove(gunbits, gunx, guny);
                break;
 
             default:
@@ -582,6 +601,8 @@ static void set_descriptors(void)
       input_descriptors[j++] = (struct retro_input_descriptor){ i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y,  "Analog Y" };
       input_descriptors[j++] = (struct retro_input_descriptor){ i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X, "Analog X (Right)" };
       input_descriptors[j++] = (struct retro_input_descriptor){ i, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y, "Analog Y (Right)" };
+      input_descriptors[j++] = (struct retro_input_descriptor){ i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER, "Gun Trigger" };
+      input_descriptors[j++] = (struct retro_input_descriptor){ i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START, "Gun Start" };
    }
    input_descriptors[j].description = NULL;
 
