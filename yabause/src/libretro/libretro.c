@@ -356,7 +356,7 @@ static int PERLIBRETROHandleEvents(void)
                //s32 guny = (guny_raw + 0x7fff) * current_height / 0xffff;
                s32 gunx = 0x7fff;
                s32 guny = 0x7fff;
-               PerGunMove(gunbits, gunx, guny);
+               PerGunMove(gunbits, gunx, -guny);
                break;
 
             default:
