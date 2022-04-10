@@ -347,15 +347,10 @@ static int PERLIBRETROHandleEvents(void)
 
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) ? PerKeyDown((i << 8) + PERGUN_TRIGGER) : PerKeyUp((i << 8) + PERGUN_TRIGGER));
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
-
-               //s32 gunx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-               //s32 guny = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);  
                s32 gunx_raw = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
                s32 guny_raw = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
-               //s32 gunx = (gunx_raw + 0x7fff) * current_width / 0xffff;
-               //s32 guny = (guny_raw + 0x7fff) * current_height / 0xffff;
-               s32 gunx = 0x7fff;
-               s32 guny = 0x7fff;
+               s32 gunx = gunx_raw + 0x7fff;
+               s32 guny = guny_raw + 0x7fff;
                PerGunMove(gunbits, gunx, -guny);
                break;
 
