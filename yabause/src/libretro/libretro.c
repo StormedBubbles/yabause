@@ -341,7 +341,7 @@ static int PERLIBRETROHandleEvents(void)
                s32 dispx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
                s32 dispy = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
                //PerMouseMove(mousebits, dispx, -dispy);
-               PerMouseMove(mousebits, 0, 0);
+               PerMouseMove(mousebits, 100, 0);
                break;
            
              case RETRO_DEVICE_LIGHTGUN:
