@@ -343,19 +343,15 @@ static int PERLIBRETROHandleEvents(void)
                PerMouseMove(mousebits, dispx, -dispy);
                break;
            
-             case RETRO_DEVICE_LIGHTGUN: ; // semi-colon to get rid of error
-           
- 	       const int scale_x = 21472;
-	       const int scale_y = current_height;
-	       const int offset_y = current_height - 240;
+             case RETRO_DEVICE_LIGHTGUN:
 
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) ? PerKeyDown((i << 8) + PERGUN_TRIGGER) : PerKeyUp((i << 8) + PERGUN_TRIGGER));
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
                s32 gunx_raw = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
                s32 guny_raw = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
-	       //s32 gunx = ( ( gunx_raw + 0x7fff ) * scale_x ) / (0x7fff << 1);
-	       //s32 guny = ( ( guny_raw + 0x7fff ) * scale_y ) / (0x7fff << 1) + offset_y;
-               PerGunMove(gunbits, gunx_raw, guny_raw);
+	       s32 gunx = 160;
+	       s32 guny = 112;
+               PerGunMove(gunbits, gunx, guny);
                break;
 
             default:
