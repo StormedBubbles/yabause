@@ -340,8 +340,7 @@ static int PERLIBRETROHandleEvents(void)
                // because i don't think this code is right in that case
                s32 dispx = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
                s32 dispy = input_state_cb_wrapper(i, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
-               //PerMouseMove(mousebits, dispx, -dispy);
-               PerMouseMove(mousebits, 50, 50);
+               PerMouseMove(mousebits, dispx, -dispy);
                break;
            
              case RETRO_DEVICE_LIGHTGUN:
@@ -350,9 +349,10 @@ static int PERLIBRETROHandleEvents(void)
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
                s32 gunx_raw = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
                s32 guny_raw = input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
-	       s32 gunx = 160;
-	       s32 guny = 112;
-               PerGunMove(gunbits, gunx, -guny);
+	       //s32 gunx = 160;
+	       //s32 guny = 112;
+               //PerGunMove(gunbits, gunx, -guny);
+               PerGunMove(gunbits, 10, 10);
                break;
 
             default:
