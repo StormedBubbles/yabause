@@ -352,7 +352,7 @@ static int PERLIBRETROHandleEvents(void)
 	       //s32 gunx = 160;
 	       //s32 guny = 112;
                //PerGunMove(gunbits, gunx, -guny);
-               PerGunMove(gunbits, 10, -10);
+               PerGunMove(gunbits, -10, -10);
                break;
 
             default:
