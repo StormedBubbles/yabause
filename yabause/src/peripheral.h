@@ -278,8 +278,9 @@ void PerAxis7Value(PerAnalog_struct * analog, u32 val);
  * */
 
 #define PERGUN_TRIGGER	25
-#define PERGUN_START		27
-#define PERGUN_AXIS		28
+#define PERGUN_START	27
+#define PERGUN_AXIS1	28
+#define PERGUN_AXIS2    29
 
 typedef struct
 {
@@ -302,6 +303,9 @@ void PerGunStartPressed(PerGun_struct * gun);
 void PerGunStartReleased(PerGun_struct * gun);
 
 void PerGunMove(PerGun_struct * gun, s32 dispx, s32 dispy);
+
+void PerGunAxis1Value(PerGun_struct * gun, u32 val);
+void PerGunAxis2Value(PerGun_struct * gun, u32 val);
 
 /** @} */
 
