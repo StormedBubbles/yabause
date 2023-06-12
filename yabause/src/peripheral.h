@@ -279,8 +279,9 @@ void PerAxis7Value(PerAnalog_struct * analog, u32 val);
 
 #define PERGUN_TRIGGER	25
 #define PERGUN_START	27
-#define PERGUN_AXIS1	28
-#define PERGUN_AXIS2    29
+#define PERGUN_AXIS	    28
+//#define PERGUN_AXIS1	28
+//#define PERGUN_AXIS2    29
 
 typedef struct
 {
