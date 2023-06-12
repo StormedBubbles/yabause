@@ -597,8 +597,10 @@ void PerGunStartReleased(PerGun_struct * gun)
 void PerGunMove(PerGun_struct * gun, s32 dispx, s32 dispy)
 {
    int x, y;
-   x = (*(gun->gunbits+1) << 8) +  *(gun->gunbits+2) + (dispx / 4);
-   y = (*(gun->gunbits+3) << 8) +  *(gun->gunbits+4) - (dispy / 4);
+   x = dispx;
+   y = dispy;
+   //x = (*(gun->gunbits+1) << 8) +  *(gun->gunbits+2) + (dispx / 4);
+   //y = (*(gun->gunbits+3) << 8) +  *(gun->gunbits+4) - (dispy / 4);
 
    if (x < 0)
       x = 0;
