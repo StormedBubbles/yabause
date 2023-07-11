@@ -602,15 +602,15 @@ void PerGunMove(PerGun_struct * gun, s32 dispx, s32 dispy)
    //x = (*(gun->gunbits+1) << 8) +  *(gun->gunbits+2) + (dispx / 4);
    //y = (*(gun->gunbits+3) << 8) +  *(gun->gunbits+4) - (dispy / 4);
 
-   if (x < 0)
-      x = 0;
-   else if (x >= 320) // fix me
-      x = 319;
+   //if (x < 0)
+   //   x = 0;
+   //else if (x >= 320) // fix me
+   //   x = 319;
 
-   if (y < 0)
-      y = 0;
-   else if (y >= 224) // fix me
-      y = 223;
+   //if (y < 0)
+   //   y = 0;
+   //else if (y >= 224) // fix me
+   //   y = 223;
 
    *(gun->gunbits+1) = x >> 8;
    *(gun->gunbits+2) = x;
