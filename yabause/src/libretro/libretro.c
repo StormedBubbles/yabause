@@ -347,9 +347,9 @@ static int PERLIBRETROHandleEvents(void)
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) ? PerKeyDown((i << 8) + PERGUN_TRIGGER) : PerKeyUp((i << 8) + PERGUN_TRIGGER));
                (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_START) ? PerKeyDown((i << 8) + PERGUN_START) : PerKeyUp((i << 8) + PERGUN_START));
 
-               dispx = (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) + 32767) * 21472 / 65534;
-               dispy = (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) + 32767) * 224 / 65534 + (224-240);
-               PerGunMove(gunbits, dispx, dispy);
+               dispx = (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) + 32767) * 320 / 65534;
+               dispy = (input_state_cb_wrapper(i, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) + 32767) * 224 / 65534;
+               PerGunMove(gunbits, 200, 200);
                break;
 
             default:
